@@ -3,30 +3,17 @@ import cors from "cors";
 import chalk from "chalk";
 import dotenv from "dotenv";
 
-import { signIn, signUp } from "./controllers/authController";
-import {
-  postTransaction,
-  getTransactions,
-} from "./controllers/transactionsController";
+import authRouter from "./routes/authRouter";
+import transactionsRouter from "./routes/transactionsRouter";
 
 const app = express();
 app.use(cors());
 app.use(json());
 dotenv.config();
 
-// { name, email, password, confirmPassword }
-// fazer validação pra ver se o e-mail já existe
-app.post("/sign-up", signUp);
+app.use(authRouter);
 
-// email, password
-app.post("/sign-in", signIn);
-
-app.get("/transactions", getTransactions);
-// buscando transações
-
-app.post("transactions", postTransaction);
-// adicionar transação no formato:
-// { value, description, type, day }
+app.use(transactionsRouter);
 
 // REVISAR O QUE TEM NO .ENV
 const port = process.env.PORT;

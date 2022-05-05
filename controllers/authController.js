@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import db from "./db.js";
 
 export async function signUp(req, res) {
-  const signupInfo = req.body;
+  const signupInfo = req.body; // {name, email, password, confirmPassword}
 
   if (signupInfo.password !== signupInfo.confirmPassword) {
     res.sendStatus(400);
