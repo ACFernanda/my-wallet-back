@@ -3,8 +3,8 @@ import cors from "cors";
 import chalk from "chalk";
 import dotenv from "dotenv";
 
-import authRouter from "./routes/authRouter";
-import transactionsRouter from "./routes/transactionsRouter";
+import authRouter from "./routes/authRouter.js";
+import transactionsRouter from "./routes/transactionsRouter.js";
 
 const app = express();
 app.use(cors());

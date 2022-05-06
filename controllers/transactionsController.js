@@ -1,6 +1,6 @@
 import joi from "joi";
 import dayjs from "dayjs";
-import db from "./db.js";
+import db from "./../db.js";
 
 export async function postTransaction(req, res) {
   // adicionar transação no formato:
