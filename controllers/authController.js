@@ -1,5 +1,6 @@
 import joi from "joi";
 import bcrypt from "bcrypt";
+import { v4 } from "uuid";
 
 import db from "./../db.js";
 
@@ -10,6 +11,8 @@ export async function signUp(req, res) {
     res.sendStatus(400);
     return;
   }
+
+  delete signupInfo.confirmPassword;
 
   const signupInfoSchema = joi.object({
     name: joi.string().required(),
@@ -26,14 +29,14 @@ export async function signUp(req, res) {
   }
 
   try {
-    const encryptedPassword = bcrypt.hashSync(signupInfo.senha, 10);
+    const encryptedPassword = bcrypt.hashSync(signupInfo.password, 10);
     await db
       .collection("users")
       .insertOne({ ...signupInfo, password: encryptedPassword });
     res.sendStatus(201);
   } catch (e) {
-    res.sendStatus(500);
-    console.log("Erro ao registrar", e);
+    res.status(500).send("Erro criando usuário.");
+    console.log("Erro criando usuário.", e);
   }
 }
 
@@ -52,6 +55,7 @@ export async function signIn(req, res) {
 
   try {
     const user = await db.collection("users").findOne({ email: login.email });
+    if (!user) return res.sendStatus(404);
     if (user && bcrypt.compareSync(login.password, user.password)) {
       const token = v4();
       await db.collection("sessions").insertOne({

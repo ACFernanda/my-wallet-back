@@ -5,13 +5,14 @@ import {
   getTransactions,
 } from "./../controllers/transactionsController.js";
 
+import { validateToken } from "./../middlewares/tokenMiddleware.js";
+
 const transactionsRouter = Router();
 
-transactionsRouter.get("/transactions", getTransactions);
-// buscando transações
+transactionsRouter.use(validateToken);
 
-transactionsRouter.post("transactions", postTransaction);
-// adicionar transação no formato:
-// { value, description, type, day }
+transactionsRouter.get("/transactions", getTransactions);
+
+transactionsRouter.post("/transactions", postTransaction);
 
 export default transactionsRouter;

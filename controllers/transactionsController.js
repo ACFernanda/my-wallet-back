@@ -19,60 +19,31 @@ export async function postTransaction(req, res) {
     return;
   }
 
-  const { authorization } = req.headers;
-  const token = authorization?.replace("Bearer ", "");
-
-  if (!token) return res.sendStatus(401);
-
+  const { user } = res.locals;
+  const day = dayjs().format("DD/MM");
   try {
-    const session = await db.collections("sessions").findOne({ token });
-    if (!session) {
-      return res.sendStatus(401);
-    }
-
-    await db.collections("transactions").insertOne({
-      userId: session.userId,
-      value,
-      description,
-      type,
-      day: dayjs(Date.now).format("DD/MM"),
+    await db.collection("transactions").insertOne({
+      ...req.body,
+      userId: user._id,
+      day,
     });
-
     res.sendStatus(201);
   } catch (e) {
-    res.sendStatus(500);
+    res.status(500).send("Erro ao cadastrar transação");
     console.log("Erro ao cadastrar transação", e);
   }
 }
 
 export async function getTransactions(req, res) {
-  // buscando transações
-  const { authorization } = req.headers;
-  const token = authorization?.replace("Bearer ", "");
-
-  if (!token) return res.sendStatus(401);
-
   try {
-    const session = await db.collections("sessions").findOne({ token });
-    if (!session) {
-      return res.sendStatus(401);
-    }
-
-    const user = await db.collections("users").findOne({
-      _id: session.userId,
-    });
-
-    if (user) {
-      const transactions = await db
-        .collections("transactions")
-        .findMany({ userId: user._id })
-        .toArray();
-      res.status(200).send(transactions);
-    } else {
-      res.sendStatus(401);
-    }
+    const { user } = res.locals;
+    const transactions = await db
+      .collection("transactions")
+      .find({ userId: user._id })
+      .toArray();
+    res.status(200).send(transactions);
   } catch (e) {
-    res.sendStatus(500);
+    res.status(500).send("Erro ao carregar transações");
     console.log("Erro ao carregar transações", e);
   }
 }
