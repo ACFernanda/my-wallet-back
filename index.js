@@ -15,7 +15,6 @@ app.use(authRouter);
 
 app.use(transactionsRouter);
 
-// REVISAR O QUE TEM NO .ENV
 const port = process.env.PORT;
 app.listen(port, () => {
   console.log(chalk.bold.green(`Running on http://localhost:${port}`));

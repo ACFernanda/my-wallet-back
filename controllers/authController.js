@@ -5,8 +5,7 @@ import { v4 } from "uuid";
 import db from "./../db.js";
 
 export async function signUp(req, res) {
-  const signupInfo = req.body; // {name, email, password, confirmPassword}
-
+  const signupInfo = req.body;
   if (signupInfo.password !== signupInfo.confirmPassword) {
     res.sendStatus(400);
     return;
@@ -63,7 +62,7 @@ export async function signIn(req, res) {
         userId: user._id,
         token,
       });
-      res.send({ token, username });
+      res.status(200).send({ token, username });
     } else res.sendStatus(404);
   } catch (e) {
     res.sendStatus(500);
