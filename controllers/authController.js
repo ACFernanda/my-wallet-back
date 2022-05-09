@@ -55,6 +55,7 @@ export async function signIn(req, res) {
 
   try {
     const user = await db.collection("users").findOne({ email: login.email });
+    const username = user.name;
     if (!user) return res.sendStatus(404);
     if (user && bcrypt.compareSync(login.password, user.password)) {
       const token = v4();
@@ -62,7 +63,7 @@ export async function signIn(req, res) {
         userId: user._id,
         token,
       });
-      res.send(token);
+      res.send({ token, username });
     } else res.sendStatus(404);
   } catch (e) {
     res.sendStatus(500);
