@@ -17,5 +17,5 @@ app.use(transactionsRouter);
 
 const port = process.env.PORT;
 app.listen(port, () => {
-  console.log(chalk.bold.green(`Running on http://localhost:${port}`));
+  console.log(chalk.bold.green(`Running on ${port}`));
 });
